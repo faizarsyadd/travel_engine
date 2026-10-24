@@ -321,10 +321,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // API Credentials hidden safely in script execution scope
+        // API Credentials sekarang aman di serverless proxy (tidak kelihatan di browser)
         const API_CONFIG = {
-            baseUrl: 'https://bandelbanget.xyz/v1',
-            apiKey: 'sk-qwen-80ac2be53d7f462ac6fcc0007d03b48aa233f3420cde5808',
+            endpoint: '/api/chat',
             model: 'gpt-4o-mini'
         };
 
@@ -476,9 +475,6 @@
         }
 
         async function fetchAICompletion(promptText, mode, budget, duration, travelers) {
-            const cleanBaseUrl = API_CONFIG.baseUrl.replace(/\/+$/, '');
-            const endpoint = `${cleanBaseUrl}/chat/completions`;
-
             const systemPrompt = `You are a professional travel planner. Return strictly a JSON object with this exact schema:
 {
   "title": "Short Trip Title",
@@ -500,11 +496,11 @@
   ]
 }`;
 
-            const response = await fetch(endpoint, {
+            // Panggil Proxy Internal Vercel (API Key Aman di Server)
+            const response = await fetch(API_CONFIG.endpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_CONFIG.apiKey}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     model: API_CONFIG.model,
